@@ -10,7 +10,44 @@ class EntryTests(TestCase):
 			  exchange='CQ KC2ZUF')
 		self.assertEquals(u'2012-01-02 03:04:05 - CQ KC2ZUF',unicode(e))
 
+	def test_save(self):
+		e = Entry.objects.create(when=datetime.datetime(2012,1,2,3,4,5),
+			  frequency='28.111',
+                          exchange='CQ KC2ZUF FN03')
+		self.assertEquals('KC2ZUF', e.callsign)
+
+	def test_extract_callsign_none(self):
+		e = Entry(exchange=None)
+		self.assertFalse(e.extract_callsign())
+		e.exchange = ''
+		self.assertFalse(e.extract_callsign())
+
+	def test_extract_callsign_invalid(self):
+		e = Entry(exchange='73 DIPOLE 10m')
+		self.assertFalse(e.extract_callsign())
+
+	def test_extract_callsign_cq(self):
+		e = Entry(exchange='CQ KC2ZUF FN03')
+		self.assertEquals('KC2ZUF',e.extract_callsign())
+
+	def test_extract_callsign_exchange(self):
+		e = Entry(exchange='KC2ZUF W2PE R-14')
+		self.assertEquals('W2PE', e.extract_callsign())
+		e = Entry(exchange='KC2ZUF W2PE -04')
+		self.assertEquals('W2PE', e.extract_callsign())
+
+	def test_extract_callsign_rrr(self):
+		e = Entry(exchange='W2PE KC2ZUF RRR')
+		self.assertEquals('KC2ZUF',e.extract_callsign())
+
+	def test_extract_loc(self):
+		e = Entry(exchange='W2PE KC2ZUF FN03')
+		self.assertEquals('KC2ZUF',e.extract_callsign())
+
 class ImporterTests(TestCase):
+	def setUp(self):
+		Entry.objects.all().delete()		
+
 	def test_empty_row(self):
 		self.assertFalse(import_row(None))
 		self.assertFalse(import_row([]))

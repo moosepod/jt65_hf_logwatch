@@ -34,4 +34,5 @@ def import_log(filename):
 	f = open(filename)
 	r = csv.reader(f)
 	for l in r:
-		print l
+		print 'Importing %s' % l[-1]
+		import_row(l)
