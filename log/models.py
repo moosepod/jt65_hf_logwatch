@@ -1,6 +1,40 @@
 import re
+import os
+import csv
 
 from django.db import models
+from log import import_row
+
+class JT65LogFile(models.Model):
+	path = models.CharField(max_length=1000,unique=True,help_text='Absolute path to log file')
+	file_size = models.PositiveIntegerField()
+
+	def file_changed(self):
+		newsize = os.path.getsize(self.path)
+		if not self.file_size:
+			return True
+
+		return newsize != self.file_size
+
+	def load(self):
+		if self.file_changed():
+        		with open(self.path) as f:
+        			r = csv.reader(f)
+        			for l in r:
+                			print 'Importing %s' % l[-1]
+                			import_row(l)
+	
+			self.store_size()
+	
+	def store_size(self):
+		self.file_size = os.path.getsize(self.path)
+		self.save()
+
+	def __unicode__(self):
+		return self.path
+
+	class Meta:
+		verbose_name = 'JT65LogFile'
 
 class Entry(models.Model):
 	GRIDSQUARE_RE = re.compile('\w\w\d\d')

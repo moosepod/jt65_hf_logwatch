@@ -1,9 +1,56 @@
 from unittest import TestCase
 import datetime
+import os
 
 from log import import_row
-from log.models import Entry
+from log.models import Entry,JT65LogFile
 
+class JT65LogFileTests(TestCase):
+	def test_unicode(self):
+		jt65lf = JT65LogFile(path='foo/bar')
+		self.assertEquals(u'foo/bar',unicode(jt65lf))
+
+	def test_file_changed_ioerror(self):
+		f = JT65LogFile(path='/tmp/foo.log')
+		self.assertRaises(OSError, f.file_changed)
+
+	def test_file_changed_newfile(self):
+		p = '/tmp/testfile.log'
+		with open(p,'w') as f:
+			f.write('')
+			jtf = JT65LogFile(path=p)
+			self.assertTrue(jtf.file_changed())
+
+	def test_file_changed_sizechange(self):
+		p = '/tmp/testfile.log'
+                with open(p,'w') as f:
+                        f.write('abcdef')
+			f.close()
+                jtf = JT65LogFile(path=p,file_size=1)
+                self.assertTrue(jtf.file_changed())
+		
+	def test_file_changed_nochange(self):
+		p = '/tmp/testfile.log'
+                with open(p,'w') as f:
+                        f.write('abcdef')
+                        f.close()
+                jtf = JT65LogFile(path=p,file_size=os.path.getsize(p))
+                self.assertFalse(jtf.file_changed())
+	
+	def test_store_size(self):
+		p = '/tmp/testfile.log'
+		jtf = JT65LogFile.objects.create(path=p,file_size=0)
+		self.assertEquals(0,jtf.file_size)
+
+		with open(p,'w') as f:
+                        f.write('abcdef')
+                        f.close()
+
+ 		jtf.store_size()
+
+		jtf = JT65LogFile.objects.get(pk=jtf.pk)
+		self.assertEquals(os.path.getsize(p),jtf.file_size)	
+	
 class EntryTests(TestCase):
 	def test_unicode(self):
 		e = Entry(when=datetime.datetime(2012,1,2,3,4,5),

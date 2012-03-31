@@ -1,9 +1,6 @@
 import csv
 import datetime
 
-from log.models import Entry
-
-
 # Row is: date, time, frequency, sync, db, dt, df, decoder, exchange
 def import_row(row):
 	if not row: return None
@@ -13,6 +10,7 @@ def import_row(row):
 	date, time, qrg, sync, db, dt, df, decoder, exchange = row[0:9]
 
 	when = datetime.datetime.strptime('%s %s UTC' % (date,time),'%Y-%m-%d %H:%M %Z')
+	from log.models import Entry
         try:
         	e = Entry.objects.get(when=when,exchange=exchange)
         except Entry.DoesNotExist:
@@ -30,9 +28,3 @@ def import_row(row):
 	
 	
 
-def import_log(filename):
-	f = open(filename)
-	r = csv.reader(f)
-	for l in r:
-		print 'Importing %s' % l[-1]
-		import_row(l)
