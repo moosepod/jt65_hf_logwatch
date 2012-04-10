@@ -120,6 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'log',
+    'qrz',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -148,6 +149,13 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'default_cache',
     }
 }
 

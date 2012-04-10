@@ -1,0 +1,13 @@
+[
+    {
+        "pk": 1, 
+        "model": "qrz.qrzcredentials", 
+        "fields": {
+            "username": "default", 
+            "qrz_url": "http://xml.qrz.com/xml", 
+            "password": "placeholder", 
+            "session_id": "", 
+            "qrz_agent": "https://github.com/moosepod/jt65_hf_logwatch"
+        }
+    }
+]
