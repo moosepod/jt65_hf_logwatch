@@ -7,7 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'jt65_hf_logwatch.views.home', name='home'),
-    # url(r'^jt65_hf_logwatch/', include('jt65_hf_logwatch.foo.urls')),
+    url(r'^log/', include('log.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

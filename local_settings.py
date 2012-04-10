@@ -9,3 +9,5 @@ DATABASES = {
     }
 }
 
+CALLSIGN='KC2ZUF'
+

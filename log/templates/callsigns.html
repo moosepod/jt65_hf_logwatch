@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>Callsigns</title>
+<link rel="stylesheet" href="{{ STATIC_URL }}/log.css" type="text/css" />
+</head>
+<body id="log">
+<table>
+{% for callsign in callsigns %}
+<tr>
+<td><h1 class="callsign">{{ callsign.callsign }}</h1></td>
+<td>
+<div class="qrz">
+{{ callsign.name }}<br/>
+{{ callsign.qth }}<br/>
+{{ callsign.distance }}<br/> 
+</div>
+</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
+
