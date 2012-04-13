@@ -5,14 +5,17 @@
 </head>
 <body id="log">
 <table>
-{% for callsign in callsigns %}
+{% for qrz in callsigns %}
 <tr>
-<td><h1 class="callsign">{{ callsign.callsign }}</h1></td>
+<td><h1 class="callsign">{{ qrz.call }}</h1></td>
 <td>
 <div class="qrz">
-{{ callsign.name }}<br/>
-{{ callsign.qth }}<br/>
-{{ callsign.distance }}<br/> 
+{% if qrz.fname %}{{ qrz.fname }} {% endif %}{{ qrz.name }}<br/>
+{% if not qrz.is_dx %}{% if qrz.addr2 %}{{ qrz.addr2 }}, {% endif %}{{ qrz.state|default:"" }} {{ qrz.zip|default:"" }}{% else %}
+{% if qrz.addr2 %}{{ qrz.addr2 }}, {% endif %}{{ qrz.country }}
+{% endif %}<br/>
+{{ qrz.license_class_expanded }} | {{ qrz.grid|upper }} {% if qrz.will_direct %}| Direct {% endif %}{% if qrz.will_lotw %}| LOTW{% endif %}<br/>
+<a href="http://qrz.com/db/?callsign={{ qrz.call }}" target="_qrz">View on QRZ.com</a>
 </div>
 </td>
 </tr>

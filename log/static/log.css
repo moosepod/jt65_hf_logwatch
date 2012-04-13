@@ -1,8 +1,9 @@
 h1.callsign {
-	font-size: 36pt;
-	margin-top: 25px;
+	font-size: 44pt;
+	margin-top: 20px;
 }
 
 div.qrz {
 	margin-left: 15px;
+	font-family: Arial, Verdana, sans-serif;
 }
