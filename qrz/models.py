@@ -10,6 +10,8 @@ import re
 import elementtree.ElementTree as ET
 
 ### See http://www.qrz.com/XML/current_spec.html for spec
+class QRZException(Exception):
+	pass
 
 class QRZCredentials(models.Model):
     username = models.CharField(max_length=100,unique=True)
@@ -19,6 +21,38 @@ class QRZCredentials(models.Model):
     qrz_agent = models.CharField(max_length=100)
 
     session_id = models.CharField(max_length=100,null=True,blank=True)
+
+    def lookup_callsign(self,callsign):
+	qrz = None
+
+        if not self.session_id:
+	    try:
+		self.login()
+	    except QRZException, e:
+		qrz = QRZRecord()
+		qrz.error = 'Unable to log into QRZ.com'
+		return qrz
+
+        if not callsign:
+            qrz= QRZRecord()
+            qrz.error = 'Missing callsign.'
+        else:
+            if callsign == 'TESTING' and settings.DEBUG:
+                # Some kind of dependency injection would probably work better here, but this is
+                # the expedient way to do things
+                data = 'asdfa'
+            else:
+                data = self.get_qrz_data(callsign)
+
+            if data:
+                qrz = QRZRecord(xml_data=data)
+            else:
+                qrz = QRZRecord()
+                qrz.is_authenticated = False
+                qrz.error = 'Unable to connect to QRZ.com'
+
+        return qrz
+
 
     def get_qrz_data(self, callsign):
         key = 'qrz-%s:%s' % (callsign, self.session_id)
@@ -30,19 +64,18 @@ class QRZCredentials(models.Model):
         return data
 
     def login(self):
-	print 'In login'
         data = self.load_url('%s?username=%s;password=%s;agent=%s' % (self.qrz_url,self.username,self.password,self.qrz_agent))
-        rx = re.compile('<Key>([^<]*)</Key>')
+        if not data: data = ''
+	rx = re.compile('<Key>([^<]*)</Key>')
         m = rx.search(data)
         if not m:
-	    raise Exception('Unable to log in to QRZ')
+	    raise QRZException('Unable to log in to QRZ')
 
         self.session_id = m.group(1)
         self.save()  
 
     # @todo add timeout
     def load_url(self, url):
-        print '>> Calling %s' % url
         usock = urllib2.urlopen(url)
         data = usock.read()
         usock.close()
