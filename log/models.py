@@ -82,3 +82,14 @@ class Entry(models.Model):
 
 	class Meta:
 		verbose_name_plural = 'Entries'
+
+# Note that we assume a JT65 mode here. This is not meant
+# to be a full logger, just to check for previous contacts
+class Contact(models.Model):
+	when = models.DateField()
+	callsign = models.CharField(max_length=100)
+	band = models.CharField(max_length=10)
+	
+	def __unicode__(self):
+		return u'%s : %s' % (self.callsign, self.when)
+	

@@ -39,9 +39,10 @@ class QRZCredentials(models.Model):
 					data = 'asdfa'
 				else:
 					data = self.get_qrz_data(callsign)
-					
+							
 				if data:
 					qrz = QRZRecord(xml_data=data)
+
 					if qrz.session_timeout:
 						self.login()
 						data = self.get_qrz_data(callsign)
@@ -53,7 +54,7 @@ class QRZCredentials(models.Model):
 		except QRZException, e:
 			qrz = QRZRecord()
 			qrz.error = e.message
-	
+
 		return qrz
 
     def get_qrz_data(self, callsign):
@@ -61,6 +62,8 @@ class QRZCredentials(models.Model):
         data = cache.get(key)
         if not data:
             data = self.load_url('%s?s=%s;callsign=%s' % (self.qrz_url, self.session_id,callsign))
+            # Our parsing code assumes a namespace of www.qrz.com, so fix that here
+            data.replace('http://xml.qrz.com','http://www.qrz.com')
             cache.set(key, data)
 
         return data
@@ -90,6 +93,7 @@ class QRZCredentials(models.Model):
    
     class Meta:
 		verbose_name = 'QRZCredentials'
+		verbose_name_plural = 'QRZCredentials'
 
 class QRZRecord(object):
     LICENSE_CLASSES = {'G': 'General',

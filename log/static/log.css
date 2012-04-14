@@ -4,7 +4,23 @@ h1.callsign {
 	margin-top: 20px;
 }
 
+
+h1.callsign > a:link    { color:black; text-decoration:none; }
+h1.callsign > a:visited { color:black; text-decoration:none; }
+h1.callsign > a:hover   { color:black; text-decoration:none; }
+h1.callsign > a:active  { color:black; text-decoration:none; }
+
+h1.cq > a:link    { color:green; text-decoration:none; }
+h1.cq > a:visited { color:green; text-decoration:none; }
+h1.cq > a:hover   { color:green; text-decoration:none; }
+h1.cq > a:active  { color:green; text-decoration:none; }
+
+
 div.qrz {
 	margin-left: 15px;
 	font-family: Arial, Verdana, sans-serif;
+}
+
+td.qso {
+	 background: yellow;
 }

@@ -5,20 +5,30 @@
 </head>
 <body id="log">
 <table>
-{% for qrz in callsigns %}
+{% for row in callsigns %}
+{% with row.qrz as qrz %}
 <tr>
-<td><h1 class="callsign">{{ qrz.call }}</h1></td>
+<td><h1 class="{% if row.is_cq %}cq {% endif %}callsign"><a href="http://www.qrz.com/db/?callsign={{ qrz.call }}" target="_qrz">
+{{ qrz.call }}</a></h1></td>
 <td>
 <div class="qrz">
-{% if qrz.fname %}{{ qrz.fname }} {% endif %}{{ qrz.name }}<br/>
-{% if not qrz.is_dx %}{% if qrz.addr2 %}{{ qrz.addr2 }}, {% endif %}{{ qrz.state|default:"" }} {{ qrz.zip|default:"" }}{% else %}
+<table width="250">
+<tr><td colspan="3">{% if qrz.fname %}{{ qrz.fname }} {% endif %}{{ qrz.name }}</td></tr>
+<tr><td colspan="3">{% if not qrz.is_dx %}{% if qrz.addr2 %}{{ qrz.addr2 }}, {% endif %}{{ qrz.state|default:"" }}{% else %}
 {% if qrz.addr2 %}{{ qrz.addr2 }}, {% endif %}{{ qrz.country }}
-{% endif %}<br/>
-{{ qrz.license_class_expanded }} | {{ qrz.grid|upper }} {% if qrz.will_direct %}| Direct {% endif %}{% if qrz.will_lotw %}| LOTW{% endif %}<br/>
-<a href="http://qrz.com/db/?callsign={{ qrz.call }}" target="_qrz">View on QRZ.com</a>
+{% endif %}</td></tr>
+<tr><td width="75">{{ qrz.grid|upper }}</td>
+<td width="75">{% if qrz.will_lotw %}LOTW{% endif %}</td>
+<td width="75">{% if qrz.will_direct %}Direct{% endif %}</td></tr>
+{% for contact in row.contacts %}
+<tr><td class="qso" colspan="3">QSO on {{ contact.band }} at {{ contact.when }}</td></tr>
+{% endfor %}
+{% endwith %}
+</table>
 </div>
 </td>
 </tr>
+{% if row.new_row %}<tr><td colspan="2"><hr /></td></tr>{% endif %}
 {% endfor %}
 </table>
 </body>

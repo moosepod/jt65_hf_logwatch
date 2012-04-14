@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'log',
     'qrz',
+    'adif'
 )
 
 # A sample logging configuration. The only tangible logging
