@@ -18,7 +18,8 @@ class Command(BaseCommand):
 	# This is a terribly inefficient way to do things, but since I have a dedicated "ham" computer for
 	# this process, it is acceptable
 	while True:
-		lf.load()
+		if lf.load():
+			print ' Found new data, loading'
 		sleep(1)
 		
 

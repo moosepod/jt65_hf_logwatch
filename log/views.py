@@ -5,7 +5,7 @@ from django.conf import settings
 from log.models import Entry
 from qrz.models import QRZCredentials
 
-CALLSIGNS_PER_PAGE=5
+CALLSIGNS_PER_PAGE=10
 
 def callsigns(request):
 	seen_callsign = {}
@@ -13,7 +13,8 @@ def callsigns(request):
 
 	qrz = QRZCredentials.objects.get(username=settings.CALLSIGN)
 
-	for e in Entry.objects.filter(callsign__isnull=False).order_by('-when','id'):
+	# The order here attempts to match the JT65 log window ordering
+	for e in Entry.objects.filter(callsign__isnull=False).order_by('-when','-id'):
 		if len(seen_callsign) == CALLSIGNS_PER_PAGE: 
 			break
 		if not seen_callsign.get(e.callsign):

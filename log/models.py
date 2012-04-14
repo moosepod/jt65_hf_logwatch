@@ -18,13 +18,20 @@ class JT65LogFile(models.Model):
 
 	def load(self):
 		if self.file_changed():
-        		with open(self.path) as f:
-        			r = csv.reader(f)
-        			for l in r:
-                			print 'Importing %s' % l[-1]
-                			import_row(l)
+			new_size = os.path.getsize(self.path)
+			start_at = self.file_size
+			if new_size < self.file_size: start_at = 0
+				
+			with open(self.path) as f:
+				f.seek(start_at)
+				r = csv.reader(f)
+				for l in r:
+					print 'Importing %s' % l[-2]
+					import_row(l)
 	
 			self.store_size()
+			return True
+		return False
 	
 	def store_size(self):
 		self.file_size = os.path.getsize(self.path)
