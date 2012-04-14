@@ -77,6 +77,10 @@ class EntryTests(TestCase):
 		e = Entry(exchange='CQ KC2ZUF FN03')
 		self.assertEquals('KC2ZUF',e.extract_callsign())
 
+	def test_extract_callsign_73(self):
+		e = Entry(exchange='W2PE KC2ZUF 73')
+		self.assertEquals('KC2ZUF',e.extract_callsign())
+		
 	def test_extract_callsign_exchange(self):
 		e = Entry(exchange='KC2ZUF W2PE R-14')
 		self.assertEquals('W2PE', e.extract_callsign())

@@ -1,9 +1,4 @@
-<html>
-<head>
-<title>Callsigns</title>
-<link rel="stylesheet" href="{{ STATIC_URL }}log.css" type="text/css" />
-</head>
-<body id="log">
+
 <table>
 {% for row in callsigns %}
 {% with row.qrz as qrz %}
@@ -31,6 +26,3 @@
 {% if row.new_row %}<tr><td colspan="2"><hr /></td></tr>{% endif %}
 {% endfor %}
 </table>
-</body>
-</html>
-

@@ -72,6 +72,7 @@ class Entry(models.Model):
 		if len(parts) == 3:
 			if parts[0]  == 'CQ' : return parts[1] # CQ KC2ZUF EM09
 			if parts[2]  == 'RRR': return parts[1]
+			if parts[2]  == '73': return parts[1]
 			if Entry.GRIDSQUARE_RE.match(parts[2]): return parts[1]
 			if Entry.SIGNAL_RE.match(parts[2]): return parts[1]
 
