@@ -72,3 +72,6 @@ class Entry(models.Model):
 
 	def __unicode__(self):
 		return u'%s - %s' % (self.when,self.exchange)
+
+	class Meta:
+		verbose_name_plural = 'Entries'

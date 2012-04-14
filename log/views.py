@@ -13,7 +13,7 @@ def callsigns(request):
 
 	qrz = QRZCredentials.objects.get(username=settings.CALLSIGN)
 
-	for e in Entry.objects.filter(callsign__isnull=False).order_by('-when'):
+	for e in Entry.objects.filter(callsign__isnull=False).order_by('-when','id'):
 		if len(seen_callsign) == CALLSIGNS_PER_PAGE: 
 			break
 		if not seen_callsign.get(e.callsign):
