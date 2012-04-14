@@ -124,3 +124,10 @@ class ImporterTests(TestCase):
 		self.assertEquals('1',e.df)
 		self.assertEquals('A',e.decoder)
 		self.assertEquals('CQ KC2ZUF FN03',e.exchange)
+		
+class ViewTests(TestCase):
+	def test_log(self):
+		self.fail()
+	
+	def test_latest_callsigns(self):
+		self.fail()

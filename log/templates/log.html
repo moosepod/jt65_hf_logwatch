@@ -2,10 +2,17 @@
 <head>
 <title>Callsigns</title>
 <link rel="stylesheet" href="{{ STATIC_URL }}log.css" type="text/css" />
+<script language="JavaScript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script language="JavaScript">
+$(document).ready(function() {
+	$.get('{% url latest_callsigns_json %}', function (data) {
+		$("#callsigns").html(data['html']);
+	});
+});
+</script>
 </head>
 <body id="log">
 <div id="callsigns">
-{% include "callsigns.html" %}
 </div>
 </body>
 </html>
