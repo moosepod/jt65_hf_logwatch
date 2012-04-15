@@ -13,8 +13,9 @@
 {% if qrz.addr2 %}{{ qrz.addr2 }}, {% endif %}{{ qrz.country }}
 {% endif %}</td></tr>
 <tr><td width="75">{{ qrz.grid|upper }}</td>
-<td width="75">{% if qrz.will_lotw %}LOTW{% endif %}</td>
-<td width="75">{% if qrz.will_direct %}Direct{% endif %}</td></tr>
+<td width="75"></td>
+<td width="75">{% if qrz.will_lotw %}<img src="{{ STATIC_URL }}icons/48px-Crystal_Clear_app_email.png" title="LOTW" label="LOTW" width="24" height="24"/>{% endif %}
+{% if qrz.will_direct %}<img src="{{ STATIC_URL }}icons/48px-Crystal_Clear_app_kedit.png" title="Direct" label="Direct" width="24" height="24"/>{% endif %}</td></tr>
 {% for contact in row.contacts %}
 <tr><td class="qso" colspan="3">QSO on {{ contact.band }} at {{ contact.when }}</td></tr>
 {% endfor %}

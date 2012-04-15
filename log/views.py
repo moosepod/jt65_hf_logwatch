@@ -47,7 +47,8 @@ def latest_callsigns_json(request):
 	callsigns = latest_callsigns_list(int(request.GET.get('last_id','0')))
 	if len(callsigns):
 		html = mark_safe(render_to_string('callsigns.html', 
-							{'callsigns': callsigns }))
+							{'callsigns': callsigns,
+							 'STATIC_URL': settings.STATIC_URL }))
 		new_callsigns = True
 		last_id = callsigns[-1]['id']
 	else:
