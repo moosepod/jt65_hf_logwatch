@@ -4,10 +4,16 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}log.css" type="text/css" />
 <script language="JavaScript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script language="JavaScript">
-$(document).ready(function() {
-	$.get('{% url latest_callsigns_json %}', function (data) {
+
+function load_callsigns(last_id) {
+	$.get('{% url latest_callsigns_json %}',{'last_id': last_id}, function (data) {
 		$("#callsigns").html(data['html']);
+		window.setTimeout('load_callsigns(' + data['last_id'] + ');',2000);
 	});
+}
+
+$(document).ready(function() {
+	load_callsigns(0);
 });
 </script>
 </head>

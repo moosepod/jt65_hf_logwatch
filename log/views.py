@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 from log.models import Entry,Contact
 from qrz.models import QRZCredentials
 
-def latest_callsigns_list():
+def latest_callsigns_list(last_id):
 	seen_callsign = {}
 	callsigns = []
 	
@@ -17,7 +17,11 @@ def latest_callsigns_list():
 
 	# The order here attempts to match the JT65 log window ordering
 	last_time = None
-	for e in Entry.objects.filter(callsign__isnull=False).order_by('-when','-id'):
+	# Using last ID here as a way to only get the latest entries isn't perfect
+	# It assumes they will be sequentially allocated. That's good enough for 
+	# what I'm trying to do here.
+	for e in Entry.objects.filter(id__gte=last_id,
+								  callsign__isnull=False).order_by('-when','-id'):
 		if not last_time: last_time = e.when
 		
 		if last_time != e.when:
@@ -26,6 +30,7 @@ def latest_callsigns_list():
 		if not seen_callsign.get(e.callsign):
 			q = qrz.lookup_callsign(e.callsign)
 			r = {'qrz':      q, 
+				 'id':       e.id,
 				 'is_cq':    e.exchange.startswith('CQ'),
 				 'contacts': list(Contact.objects.filter(callsign__iexact=e.callsign))}
 			callsigns.append(r)
@@ -35,19 +40,24 @@ def latest_callsigns_list():
 		
 def callsigns(request):
 	return render_to_response('log.html',
-                          {'callsigns': latest_callsigns_list()},
+                          {'callsigns': latest_callsigns_list(0)},
                           context_instance=RequestContext(request))
 
 def latest_callsigns_json(request):
-	callsigns = latest_callsigns_list()
+	callsigns = latest_callsigns_list(int(request.GET.get('last_id','0')))
 	if len(callsigns):
 		html = mark_safe(render_to_string('callsigns.html', 
 							{'callsigns': callsigns }))
 		new_callsigns = True
+		last_id = callsigns[-1]['id']
 	else:
 		html = ''
 		new_callsigns = False
-	json = simplejson.dumps({'html': html,'has_new': new_callsigns})
+		last_id = 0
+		
+	json = simplejson.dumps({'html': html,
+							 'last_id': last_id,
+							 'has_new': new_callsigns})
 	return HttpResponse(json,
 						mimetype="application/json")
 
